@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TradeX - Modern Trading Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-bg-light: #f7f9fc;
+      --color-text-light: #333;
+      --color-bg-dark: #0f172a;
+      --color-text-dark: #eee;
+      --color-primary: #2563eb;
+      --color-primary-dark: #1e40af;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+    }
+
+    body {
+      background-color: var(--color-bg-light);
+      color: var(--color-text-light);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark {
+      background-color: var(--color-bg-dark);
+      color: var(--color-text-dark);
+    }
+
+    header {
+      background-color: var(--color-bg-dark);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color var(--transition-speed);
+    }
+
+    body.dark header {
+      background-color: var(--color-bg-light);
+      color: var(--color-text-light);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color var(--transition-speed);
+    }
+
+    body.dark nav a {
+      color: var(--color-text-light);
+    }
+
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .hero h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #555;
+      transition: color var(--transition-speed);
+    }
+
+    body.dark .hero p {
+      color: #ccc;
+    }
+
+    .btn {
+      margin-top: 2rem;
+      background-color: var(--color-primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color var(--transition-speed);
+    }
+
+    .btn:hover {
+      background-color: var(--color-primary-dark);
+    }
+
+    .trading-section {
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    footer {
+      background-color: var(--color-bg-dark);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: auto;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+    }
+
+    body.dark footer {
+      background-color: var(--color-bg-light);
+      color: var(--color-text-light);
+    }
+
+    /* Dark/light toggle button */
+    #themeToggle {
+      background-color: transparent;
+      border: 2px solid white;
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    body.dark #themeToggle {
+      border-color: var(--color-text-light);
+      color: var(--color-text-light);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TradeX</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Markets</a>
+      <a href="#">Contact</a>
+      <button id="themeToggle" aria-label="Toggle Dark/Light Mode">Dark Mode</button>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Trade Smarter with TradeX</h2>
+    <p>Real-time market data, secure trading, and smart insights at your fingertips.</p>
+    <button class="btn" onclick="simulateTrade()">Start Trading</button>
+  </section>
+
+  <section class="trading-section">
+    <h3>Live Bitcoin Price:</h3>
+    <div class="price" id="btcPrice">$--.--</div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 TradeX. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Fetch live BTC price from CoinGecko API
+    async function updatePrice() {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        const data = await response.json();
+        const price = data.bitcoin.usd.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        const btcPrice = document.getElementById('btcPrice');
+        if (btcPrice) {
+          btcPrice.textContent = price;
+        }
+      } catch (error) {
+        console.error('Failed to fetch BTC price:', error);
+        // fallback to random price simulation
+        const price = (Math.random() * 10000 + 60000).toFixed(2);
+        document.getElementById('btcPrice').textContent = `$${price}`;
+      }
+    }
+
+    function simulateTrade() {
+      alert("Trade executed successfully!");
+    }
+
+    // Dark/light mode toggle
+    const toggleButton = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Load theme from localStorage or default to light
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        body.classList.add('dark');
+        toggleButton.textContent = 'Light Mode';
+      } else {
+        body.classList.remove('dark');
+        toggleButton.textContent = 'Dark Mode';
+      }
+    }
+
+    // Toggle theme and save preference
+    toggleButton.addEventListener('click', () => {
+      if (body.classList.contains('dark')) {
+        body.classList.remove('dark');
+        toggleButton.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.classList.add('dark');
+        toggleButton.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadTheme();
+      updatePrice();
+      setInterval(updatePrice, 10000); // update every 10 seconds
+    });
+  </script>
+</body>
+</html>
